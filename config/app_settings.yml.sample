@@ -1,0 +1,36 @@
+## Environment settings
+defaults: &defaults
+  application_name: Ampblog
+  support_email: 'admin@amp.com'
+
+  picture:
+    max_allowed_size: 32 # MB
+    content_types:
+      - "image/gif"
+      - "image/jpeg"
+      - "image/png"
+      - "image/x-png"
+      - "image/pjpeg"
+
+dev_defaults: &dev_defaults
+  <<: *defaults
+  host: localhost
+  port: 3003
+  protocol: http
+  relative_url_root: /
+
+prod_defaults: &prod_defaults
+  <<: *defaults
+  host: ampb.com       # change this while deploying
+  port: 3003
+  protocol: https
+  relative_url_root: /
+
+development:
+  <<: *dev_defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *prod_defaults

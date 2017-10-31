@@ -1,0 +1,12 @@
+default: &default
+  namespace: sblog
+  host: ['localhost']
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+
+test:
+  <<: *default

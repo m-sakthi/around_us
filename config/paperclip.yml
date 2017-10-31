@@ -1,0 +1,30 @@
+default: &default
+  storage: :filesystem
+  hash_data: ':rails_env/:class/:attachment/:id/:image_updated_at'
+  hash_secret: <%= Rails.application.secrets.paperclip_key %>
+  url: '/system/:class/:attachment/:id_partition/:style/:hash/:filename'
+  use_timestamp: false
+
+aws_default: &aws_default
+  <<: *default
+  storage: :s3
+  s3_protocol: https
+  s3_region: <%= Rails.application.secrets.s3_region %>
+  s3_credentials:
+    bucket: <%= Rails.application.secrets.s3_bucket %>
+    access_key_id: <%= Rails.application.secrets.s3_aws_key_id %>
+    secret_access_key: <%= Rails.application.secrets.s3_secret_access_key %>
+  url: ':s3_path_url'
+  path: '/system/:class/:attachment/:id_partition/:style/:hash/:filename'
+  s3_permissions:
+    original: :private
+
+development:
+  <<: *default
+
+production:
+  <<: *aws_default
+
+test:
+  <<: *default
+  path: ":rails_root/public/system/:rails_env/:class/:attachment/:id_partition/:style/:filename"
