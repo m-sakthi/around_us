@@ -12,6 +12,13 @@ defaults: &defaults
       - "image/x-png"
       - "image/pjpeg"
 
+  authentication:
+    key_based: false
+    account_activation_via_web: false
+    activation_path: '/api/v1/users/account_activation/'
+    password_reset_path: '/api/v1/users/password_reset/'
+    session_expiry: 86400 # in seconds
+
 dev_defaults: &dev_defaults
   <<: *defaults
   host: localhost

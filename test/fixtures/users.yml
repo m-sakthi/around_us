@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: 
+  user_name: 
+  password_digest: 
+  first_name: 
+  last_name: 
+  status: 
+  activation_digest: 
+  activated_at: 
+  reset_digest: 
+  reset_sent_at: 
+  authentication_token: MyString
+
+two:
+  email: 
+  user_name: 
+  password_digest: 
+  first_name: 
+  last_name: 
+  status: 
+  activation_digest: 
+  activated_at: 
+  reset_digest: 
+  reset_sent_at: 
+  authentication_token: MyString

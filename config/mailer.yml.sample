@@ -1,0 +1,31 @@
+defaults: &defaults
+  host_with_port: 'localhost:3003'
+  protocol: 'http'
+  smtp:
+    enabled: true
+    settings:
+      address: 'smtp.sendgrid.net'
+      port: '587'
+
+prod_defaults: &prod_defaults
+  host_with_port: 'pay2khel-api-herokuapp.com:443'
+  protocol: 'https'
+  smtp:
+    enabled: true
+    settings:
+      address: 'smtp.sendgrid.net'
+      port: '587'
+      authentication: 'plain'
+      user_name: ENV['SENDGRID_USERNAME']
+      password: ENV['SENDGRID_PASSWORD']
+      domain: 'heroku.com'
+      enable_starttls_auto: true
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *prod_defaults

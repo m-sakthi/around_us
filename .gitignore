@@ -23,7 +23,9 @@ public/api/v1
 
 # Ignore config files.
 /config/app_settings.yml
+/config/cable.yml
 /config/dalli.yml
 /config/database.yml
+/config/mailer.yml
 /config/paperclip.yml
 /config/secrets.yml

@@ -1,5 +1,5 @@
 default: &default
-  namespace: sblog
+  namespace: ampblog
   host: ['localhost']
 
 development:

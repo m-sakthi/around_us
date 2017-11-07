@@ -1,6 +1,6 @@
 default: &default
   storage: :filesystem
-  hash_data: ':rails_env/:class/:attachment/:id/:image_updated_at'
+  hash_data: ':rails_env/:class/:attachment/:id/:image_updated_att'
   hash_secret: <%= Rails.application.secrets.paperclip_key %>
   url: '/system/:class/:attachment/:id_partition/:style/:hash/:filename'
   use_timestamp: false
