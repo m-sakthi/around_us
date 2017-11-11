@@ -56,6 +56,9 @@ Rails.application.configure do
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
+  #dalli_config = YAML.load_file("#{Rails.root}/config/dalli.yml") rescue raise('dalli.yml missing. Are you serious about this?')
+  dalli_config = HashWithIndifferentAccess.new(Rails.application.config_for(:dalli))
+  config.cache_store = :dalli_store, dalli_config["host"], { namespace: dalli_config['namespace'], compress: true }
 
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque

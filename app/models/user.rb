@@ -2,25 +2,16 @@ class User < ApplicationRecord
   rolify
   attr_accessor :activation_token, :reset_token
 
+  # CAllbacks
   before_save :ensure_auth_tokens, if: lambda { |entry| entry[:authentication_token].blank? }
-  
+
+  # Scopes
+
+  # Associations
   # has_many :posts, inverse_of: :user, dependent: :destroy
   # has_many :pictures, as: :imageable, dependent: :destroy
 
-  EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
-  validates(:email, uniqueness: {case_sensitive: false},
-                    presence: true,
-                    length: { maximum: 255 },
-                    format: { with: EMAIL_REGEX })
-  validates :user_name, uniqueness: true, allow_blank: false
-  validates :first_name, length: { maximum: 50 }
-  validates :last_name, length: { maximum: 50 }
-  
-  has_secure_password
-  validates :password, length: { minimum: 6 }, allow_nil: true
-
-  enum status: [:not_activated, :active, :blocked, :deleted]
-
+  # Constants
   module Status
     NOT_ACTIVATED = 'not_activated'
     ACTIVE = 'active'
@@ -31,8 +22,23 @@ class User < ApplicationRecord
 
   module Settings
     RECORDS_LIMIT = 20
+    EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   end
 
+  enum status: Status::ALL
+
+  # Validations
+  validates(:email, uniqueness: {case_sensitive: false},
+                    presence: true,
+                    length: { maximum: 255 },
+                    format: { with: Settings::EMAIL_REGEX })
+  validates :user_name, uniqueness: true, allow_blank: false, length: { maximum: 50 }
+  validates :first_name, presence: true, length: { maximum: 50 }
+  validates :last_name, presence: true, length: { maximum: 50 }
+  has_secure_password
+  validates :password, length: { minimum: 6, maximum: 30 }, allow_nil: true
+
+  # Class methods and Instance methods
   def generate_api_key
     api_key = new_token
     if AppSettings[:authentication][:key_based]
@@ -56,7 +62,7 @@ class User < ApplicationRecord
       user = User.find_by_authentication_token authentication_token if authentication_token
       user.generate_api_key if user && renew
     elsif api_key
-      user = User.find( api_key.split("_").first.delete("^0-9") )
+      user = User.find( api_key.split("__").first.delete("^0-9") )
       user = (user.authenticated?(:activation, cached_key) && user.activated_at > Time.now - 24.hours) ? user : nil
       user.generate_api_key if user && renew && user.activated_at < Time.now - 24.hours
     end
@@ -64,11 +70,11 @@ class User < ApplicationRecord
   end
 
   def self.cached_api_key(api_key)
-    "api/#{api_key}"  
+    "#{AppSettings[:authentication][:key_based]}/#{api_key}"
   end
 
   def secured_key(api_key)
-    [*('A'..'Z'),*('a'..'z')].sample(2).join + self.id.to_s + "_" + api_key
+    [*('A'..'Z'),*('a'..'z')].sample(3).join + self.id.to_s + "__" + api_key
   end
 
   # Returns the hash digest of the given string.

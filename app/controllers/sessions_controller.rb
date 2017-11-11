@@ -15,11 +15,11 @@ class SessionsController < ApplicationController
   def create
     user = User.where(email: params[:user][:email].downcase).first
     if user && user.authenticate(params[:user][:password])
-      if user.active?
+      if user.active? || user.blocked?
         api_key = login user
         render json: { api_key: api_key }
       else
-        render json: { error: _('errors.not_activated') }, status: :forbidden
+        render json: { error: _('errors.not_activated_or_disabled') }, status: :forbidden
       end
     else
       render json: { error: _('errors.authentication_failure') }, status: 401

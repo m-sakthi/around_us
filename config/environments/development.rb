@@ -18,12 +18,15 @@ Rails.application.configure do
 
     config.cache_store = :memory_store
     config.public_file_server.headers = {
-      'Cache-Control' => "public, max-age=#{2.days.seconds.to_i}"
+      'Cache-Control' => 'public, max-age=172800'
     }
   else
-    config.action_controller.perform_caching = false
+    config.action_controller.perform_caching = true
 
-    config.cache_store = :null_store
+    #config.cache_store = :null_store
+    # dalli_config = YAML.load_file("#{Rails.root}/config/dalli.yml") rescue raise('dalli.yml missing. Are you serious about this?')
+    dalli_config = Rails.application.config_for(:dalli)
+    config.cache_store = :dalli_store, dalli_config["host"], { namespace: dalli_config['namespace'], compress: true }
   end
 
   # Don't care if the mailer can't send.

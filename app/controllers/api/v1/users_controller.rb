@@ -27,11 +27,12 @@ class Api::V1::UsersController < ApplicationController
 
   swagger_api :create do
     summary 'Create a new user'
-    param :form, :'user[email]', :string, :required, "Email"
-    param :form, :'user[password]', :string, :required, 'Password'
+    param :form, :'user[email]', :string, :required, "Email: maximum: 255 chars"
+    param :form, :'user[password]', :string, :required, 'Password: maximum: 6 & maximum: 50 chars '
     param :form, :'user[password_confirmation]', :string, :required, 'Password Confirmation'
-    param :form, :'user[first_name]', :string, :optional, "First name"
-    param :form, :'user[last_name]', :string, :optional, "Last name"
+    param :form, :'user[first_name]', :string, :required, "First name: maximum: 50"
+    param :form, :'user[last_name]', :string, :required, "Last name: maximum: 50"
+    param :form, :'user[user_name]', :string, :optional, "User name(can be used to @ mention)"
     response :created
     response :bad_request
     response :forbidden
@@ -62,9 +63,10 @@ class Api::V1::UsersController < ApplicationController
   swagger_api :update do
     summary 'Update a user'
     param :path, :id, :integer, :required, 'User ID'
-    param :form, :'user[email]', :string, :optional, "Email"
-    param :form, :'user[first_name]', :string, :optional, "First name"
-    param :form, :'user[last_name]', :string, :optional, "Last name"
+    param :form, :'user[email]', :string, :optional, "Email: maximum: 255 chars"
+    param :form, :'user[first_name]', :string, :optional, "First name: maximum: 50"
+    param :form, :'user[last_name]', :string, :optional, "Last name: maximum: 50"
+    param :form, :'user[user_name]', :string, :optional, "User name(can be used to @ mention)"
     param_list :form, :'user[status]', :string, :optional, "Status", User::Status::ALL
     response :created
     response :bad_request
@@ -74,7 +76,6 @@ class Api::V1::UsersController < ApplicationController
   end
 
   def update
-    debugger
     @user.update(update_params)
     if @user.errors.present?
       render 'shared/model_errors', locals: { object: @user }, status: :bad_request
