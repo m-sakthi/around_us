@@ -18,6 +18,10 @@ Rails.application.routes.draw do
         end
       end
 
+      resources :posts
+
+      resources :pictures
+
       resources :roles do
         collection do
           post :create

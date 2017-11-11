@@ -2,14 +2,14 @@ class User < ApplicationRecord
   rolify
   attr_accessor :activation_token, :reset_token
 
-  # CAllbacks
+  # Callbacks
   before_save :ensure_auth_tokens, if: lambda { |entry| entry[:authentication_token].blank? }
 
   # Scopes
 
   # Associations
-  # has_many :posts, inverse_of: :user, dependent: :destroy
-  # has_many :pictures, as: :imageable, dependent: :destroy
+  has_many :posts, inverse_of: :user, dependent: :destroy
+  has_many :pictures, as: :imageable, dependent: :destroy
 
   # Constants
   module Status
@@ -138,15 +138,15 @@ class User < ApplicationRecord
     end
   end
 
-  # def get_pictures
-  #   Picture.where(imageable: self)
-  #     .or(Picture.where(imageable: self.posts))
-  #     .order("
-  #       case imageable_type
-  #         when 'User' then 1
-  #         when 'Post' then 2
-  #       end")
-  # end
+  def get_pictures
+    Picture.where(imageable: self)
+      .or(Picture.where(imageable: self.posts))
+      .order("
+        case imageable_type
+          when 'User' then 1
+          when 'Post' then 2
+        end")
+  end
 
   private
     def ensure_auth_tokens
