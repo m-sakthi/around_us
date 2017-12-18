@@ -13,7 +13,8 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def index
-    @posts = Post.all.page(params[:page_number]).per(params[:limit])
+    @posts = current_user.posts.includes(:pictures)
+      .page(params[:page_number]).per(params[:limit])
   end
 
   swagger_api :show do
@@ -30,8 +31,7 @@ class Api::V1::PostsController < ApplicationController
 
   swagger_api :create do
     summary 'Create new Post'
-    param :form, :'data[post][body]', :string, :required, 'Body of the post'
-    param :form, :'data[picture][image]', :file, :optional, 'Image attached for the post'
+    param :form, :'post[body]', :string, :required, 'Body of the post'
     response :created
     response :bad_request
     response :forbidden
@@ -39,16 +39,8 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def create
-    @post = current_user.posts.build( create_params[:post] )
-    if @post.valid? && create_params[:picture].present?
-      @picture = @post.pictures.build(create_params[:picture])
-      if @picture.save
-        @post.save
-        render 'show', status: :created
-      else
-        render 'shared/model_errors', locals: { object: @picture }, status: :bad_request
-      end
-    elsif @post.save
+    @post.user_id = current_user.id
+    if @post.save
       render 'show', status: :created
     else
       render 'shared/model_errors', locals: { object: @post }, status: :bad_request
@@ -80,7 +72,7 @@ class Api::V1::PostsController < ApplicationController
   end
 
   def update
-    @post.update(update_params[:body])
+    @post.update(post_params)
     if @post.errors.present?
       render 'shared/model_errors', locals: { object: @post }, status: :bad_request
     else
@@ -89,11 +81,7 @@ class Api::V1::PostsController < ApplicationController
   end
 
   private
-    def create_params
-      params.require(:data).permit(post: [:body], picture: [:image]);
-    end
-
-    def update_params
-      params.require(:post).permit(:body);
+    def post_params
+      params.require(:post).permit(:body)
     end
 end

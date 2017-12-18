@@ -1,6 +1,6 @@
 object @picture
 
-attributes :id
+attributes :id, :imageable_id, :imageable_type
 
 node :name do |picture|
   picture.image_file_name
@@ -22,10 +22,6 @@ node :updated_at do |picture|
   picture.image_updated_at
 end
 
-node :parent_id do |picture|
-  picture.imageable_id
-end
-
-node :parent_type do |picture|
-  picture.imageable_type
+node :urls do |picture|
+  partial 'pictures/style', object: picture
 end

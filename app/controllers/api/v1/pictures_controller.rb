@@ -1,5 +1,5 @@
 class Api::V1::PicturesController < ApplicationController
-	load_and_authorize_resource
+	load_and_authorize_resource except: :create
 
   swagger_controller :pictures, "Pictures Management"
 
@@ -19,8 +19,8 @@ class Api::V1::PicturesController < ApplicationController
 
   swagger_api :create do
     summary 'Create new Picture'
-    param_list :form, :parent_type, :string, :required, 'Image for a User or a Post', Picture::ImagableType::ALL
-    param :form, :parent_id, :integer, :required, 'ID of the type'
+    param_list :form, :'picture[imageable_type]', :string, :required, 'Image for a User or a Post', Picture::ImagableType::ALL
+    param :form, :'picture[imageable_id]', :integer, :required, 'ID of the type'
     param :form, :'picture[image]', :file, :required, 'Image attached for the post'
     param_list :form, :'picture[picture_type]', :string, :required, 'Picture type Profile or Cover if the parent_type is User', Picture::PictureType::ALL
     response :created
@@ -30,19 +30,15 @@ class Api::V1::PicturesController < ApplicationController
   end
 
   def create
-    if params[:parent_type].present? && params[:parent_id].present?
-      if params[:parent_type] == Picture::ImagableType::POST && params[:picture][:picture_type].present?
-        raise App::Exception::InvalidParameter.new(_('errors.pictures.imageable_type_not_applicable'))
-      end
-      @user_or_post = params[:parent_type].constantize.find(params[:parent_id])
-      @picture = @user_or_post.pictures.new(picture_params)
-      if @picture.save
-        render 'show', status: :created
-      else
-        render 'shared/model_errors', locals: { object: @picture }, status: :bad_request
-      end
+    validate_params
+    @picture = Picture.new(picture_params)
+    authorize! :create, @picture
+    if @picture.valid?
+      authorize! :create, @picture
+      @picture.save
+      render 'show', status: :created
     else
-      raise App::Exception::InvalidParameter.new(_('errors.pictures.missing_imageable_type'))
+      render 'shared/model_errors', locals: { object: @picture }, status: :bad_request
     end
   end
 
@@ -74,6 +70,13 @@ class Api::V1::PicturesController < ApplicationController
 
   private
     def picture_params
-      params.require(:picture).permit(:image, :picture_type)
+      params.require(:picture).permit(:image, :picture_type, :imageable_type, :imageable_id)
+    end
+
+    def validate_params
+      raise App::Exception::InvalidParameter.new(_('errors.pictures.invalid_imageable_type', types: Picture::ImagableType::ALL.join("/") )
+        ) if params[:picture][:imageable_type].blank? || Picture::ImagableType::ALL.exclude?(params[:picture][:imageable_type])
+      raise App::Exception::InvalidParameter.new(_('errors.pictures.invalid_picture_type')
+        ) if params[:picture][:picture_type].present? && Picture::PictureType::ALL.exclude?(params[:picture][:picture_type])
     end
 end

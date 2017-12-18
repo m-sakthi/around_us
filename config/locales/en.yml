@@ -12,6 +12,10 @@ en:
       one: "User ID is invalid"
       other: "User IDs are invalid"
     invalid_status: "Invalid Status"
+    pictures:
+      invalid_imageable_type: "imageable_type should be %{types}"
+      invalid_picture_type: "picture_type should be profile or cover"
+      imageable_type_not_applicable: "can be set as %{type} photo only for User imageable_type"
   views:
     users:
       email_token_does_not_match: "The email or token does not match."

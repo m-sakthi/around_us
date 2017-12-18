@@ -70,7 +70,7 @@ class User < ApplicationRecord
   end
 
   def self.cached_api_key(api_key)
-    "#{AppSettings[:authentication][:key_based]}/#{api_key}"
+    "#{AppSettings[:authentication][:nonce]}/#{api_key}"
   end
 
   def secured_key(api_key)
@@ -145,7 +145,7 @@ class User < ApplicationRecord
         case imageable_type
           when 'User' then 1
           when 'Post' then 2
-        end")
+        end", :id)
   end
 
   private
