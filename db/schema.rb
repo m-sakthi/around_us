@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171111063108) do
+ActiveRecord::Schema.define(version: 20171218134919) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
+    t.string "purpose"
+    t.bigint "user_id"
+    t.integer "visibility"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_groups_on_user_id"
+  end
 
   create_table "pictures", force: :cascade do |t|
     t.string "image_file_name"
@@ -65,6 +75,17 @@ ActiveRecord::Schema.define(version: 20171111063108) do
     t.index ["user_name"], name: "index_users_on_user_name", unique: true
   end
 
+  create_table "users_groups", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "group_id"
+    t.integer "privilege", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_users_groups_on_group_id"
+    t.index ["user_id", "group_id"], name: "index_users_groups_on_user_id_and_group_id", unique: true
+    t.index ["user_id"], name: "index_users_groups_on_user_id"
+  end
+
   create_table "users_roles", id: false, force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "role_id"
@@ -73,5 +94,8 @@ ActiveRecord::Schema.define(version: 20171111063108) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "groups", "users"
   add_foreign_key "posts", "users"
+  add_foreign_key "users_groups", "groups"
+  add_foreign_key "users_groups", "users"
 end

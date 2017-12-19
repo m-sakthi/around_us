@@ -21,11 +21,12 @@ class Ability
       u == user || user.is_admin?
     end
 
-    # Post
-    can :create, [Post, Picture] do |post|
+    # Create Post and Picture
+    can :create, [Post, Picture, Group] do |post|
       user.active?
     end
 
+    # Post
     can [:index, :show], Post do |post|
       user.active? && post.user == user #( post.user == user || user.followers.include? post.user )
     end
@@ -37,6 +38,20 @@ class Ability
     # Picture
     can [:index, :show, :destroy], Picture do |picture|
       picture.owner == user
+    end
+
+    # Group
+    can :index, Group do |group|
+      user.active?
+    end
+
+    can [:show, :members], Group do |group|
+      user.active? && group.visibility == Group::Visibility::PUBLIC ?
+        true : group.member?(user.id)
+    end
+
+    can [:update, :destroy, :add_members, :update_privilege, :remove_members], Group do |group|
+      group.can?(user.id, UsersGroup::Privilege::ADMIN) || group.user_id == user.id || user.is_admin?
     end
   end
 end

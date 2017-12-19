@@ -18,7 +18,7 @@ class Api::V1::PostsController < ApplicationController
   end
 
   swagger_api :show do
-    summary 'Display a Posts details'
+    summary 'Display a Post\'s details'
     param :path, :id, :integer, :required, 'Post ID'
     response :ok
     response :bad_request
@@ -43,7 +43,7 @@ class Api::V1::PostsController < ApplicationController
     if @post.save
       render 'show', status: :created
     else
-      render 'shared/model_errors', locals: { object: @post }, status: :bad_request
+      render_model_errors(@post)
     end
   end
 
@@ -74,7 +74,7 @@ class Api::V1::PostsController < ApplicationController
   def update
     @post.update(post_params)
     if @post.errors.present?
-      render 'shared/model_errors', locals: { object: @post }, status: :bad_request
+      render_model_errors(@post)
     else
       render 'show', status: :created
     end

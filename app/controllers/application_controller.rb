@@ -1,10 +1,12 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session, unless: -> { request.format.json? }
+  include ApplicationHelper
   include SessionsHelper
   
   rescue_from ActiveRecord::RecordNotFound, :with => :record_not_found
   rescue_from CanCan::AccessDenied, with: :forbidden_access
   rescue_from App::Exception::InvalidParameter, with: :invalid_parameter
+  rescue_from App::Exception::InsufficientPrivilege, with: :forbidden_access
 
   before_action :authenticate_user!
 
@@ -18,7 +20,7 @@ class ApplicationController < ActionController::Base
     end
 
     def record_not_found
-      render json: { error: _('errors.not_found') }, :status => 404
+      render json: { error: _('errors.not_found') }, status: 404
     end
 
     def forbidden_access

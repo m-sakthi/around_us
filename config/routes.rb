@@ -22,6 +22,15 @@ Rails.application.routes.draw do
 
       resources :pictures
 
+      resources :groups do
+        member do
+          get :members
+          post :add_members
+          put :update_privilege
+          delete :remove_members
+        end
+      end
+
       resources :roles do
         collection do
           post :create

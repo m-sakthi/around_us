@@ -6,7 +6,7 @@ class Api::V1::PicturesController < ApplicationController
   swagger_api :index do
     summary 'Lists all Pictures that user has uploaded'
     # param_list :query, :type, :string, :optional, 'Image for a User or a Post', Picture::ImagableType::ALL
-    param :query, :limit, :integer, :optional, 'Number of Posts per page'
+    param :query, :limit, :integer, :optional, 'Number of Pictures per page'
     param :query, :page_number, :integer, :optional, 'Page Number'
     response :ok
     response :unauthorized
@@ -38,7 +38,7 @@ class Api::V1::PicturesController < ApplicationController
       @picture.save
       render 'show', status: :created
     else
-      render 'shared/model_errors', locals: { object: @picture }, status: :bad_request
+      render_model_errors(@picture)
     end
   end
 

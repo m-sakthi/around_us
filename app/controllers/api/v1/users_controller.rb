@@ -43,7 +43,7 @@ class Api::V1::UsersController < ApplicationController
   def create
     @user = User.create(create_params)
     if @user.errors.present?
-      render 'shared/model_errors', locals: { object: @user }, status: :bad_request
+      render_model_errors(@user)
     else
       @user.send_activation_email
       render 'show', status: :created
@@ -78,7 +78,7 @@ class Api::V1::UsersController < ApplicationController
   def update
     @user.update(update_params)
     if @user.errors.present?
-      render 'shared/model_errors', locals: { object: @user }, status: :bad_request
+      render_model_errors(@user)
     else
       render 'show', status: :ok
     end

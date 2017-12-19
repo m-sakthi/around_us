@@ -1,7 +1,7 @@
 ## Environment settings
 defaults: &defaults
-  application_name: Ampblog
-  support_email: 'admin@amp.com'
+  application_name: AroundUs
+  support_email: 'admin@aroundus.com'
 
   picture:
     max_allowed_size: 32 # MB
@@ -11,14 +11,31 @@ defaults: &defaults
       - "image/png"
       - "image/x-png"
       - "image/pjpeg"
+    styles:
+      small:
+        - '45x45#'
+        - :jpg
+      medium:
+        - '120x120#'
+        - :jpg
+      large:
+        - '200x200'
+        - :jpg
+    convert_options:
+      small: "-quality 75 -strip"
+      medium: "-quality 85 -strip"
+      large: "-quality 100 -strip"
+
+  group:
+    max_members: 200
 
   authentication:
-    key_based: false
+    key_based: true
     account_activation_via_web: false
     activation_path: '/api/v1/users/account_activation/'
     password_reset_path: '/api/v1/users/password_reset/'
     session_expiry: 86400 # in seconds
-    nonce: 'ampb_api'
+    nonce: 'aroundus_api'
 
 dev_defaults: &dev_defaults
   <<: *defaults
@@ -29,8 +46,8 @@ dev_defaults: &dev_defaults
 
 prod_defaults: &prod_defaults
   <<: *defaults
-  host: ampb.com       # change this while deploying
-  port: 3003
+  host: aroundus.space       # change this while deploying
+  port: 443
   protocol: https
   relative_url_root: /
 

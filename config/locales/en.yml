@@ -8,6 +8,8 @@ en:
     not_found: "Record not found"
     role_already_exist: "Role already exists"
     role_not_exist: "Role does not exists"
+    required_param_missing: "Required parameter %{name} is/are missing."
+    invalid_param_values: "%{param_name} permitted values - (%{valid_values})"
     invalid_user_ids:
       one: "User ID is invalid"
       other: "User IDs are invalid"
@@ -16,6 +18,11 @@ en:
       invalid_imageable_type: "imageable_type should be %{types}"
       invalid_picture_type: "picture_type should be profile or cover"
       imageable_type_not_applicable: "can be set as %{type} photo only for User imageable_type"
+    groups:
+      error_message: "%{message} for user_id %{user_id}"
+      cannot_assign_deleted_visibility: "cannot be assigned deleted while creating"
+      max_members_limit_reached: "maximum members limit reached"
+      cannot_join_unless_public_group: "Cannot join a private/deleted group"
   views:
     users:
       email_token_does_not_match: "The email or token does not match."

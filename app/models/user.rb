@@ -10,6 +10,9 @@ class User < ApplicationRecord
   # Associations
   has_many :posts, inverse_of: :user, dependent: :destroy
   has_many :pictures, as: :imageable, dependent: :destroy
+  has_many :created_groups, inverse_of: :creator, class_name: Group.name
+  has_many :users_groups, inverse_of: :user
+  has_many :groups, through: :users_groups
 
   # Constants
   module Status
@@ -32,7 +35,7 @@ class User < ApplicationRecord
                     presence: true,
                     length: { maximum: 255 },
                     format: { with: Settings::EMAIL_REGEX })
-  validates :user_name, uniqueness: true, allow_blank: false, length: { maximum: 50 }
+  validates :user_name, uniqueness: true, allow_blank: true, length: { maximum: 50 }
   validates :first_name, presence: true, length: { maximum: 50 }
   validates :last_name, presence: true, length: { maximum: 50 }
   has_secure_password

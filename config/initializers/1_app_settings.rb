@@ -1,4 +1,4 @@
-AppSettings = HashWithIndifferentAccess.new(Rails.application.config_for(:'app_settings'))
+AppSettings = HashWithIndifferentAccess.new(Rails.application.config_for(:app_settings))
 
 def build_url()
   if ![443, 80].include?(AppSettings[:port].to_i)

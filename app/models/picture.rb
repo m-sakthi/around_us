@@ -30,10 +30,12 @@ class Picture < ApplicationRecord
     content_type: { content_type: AppSettings['picture']['content_types'] },
     presence: true, size: { in: 0..AppSettings['picture']['max_allowed_size'].megabytes }
   validates :picture_type, allow_nil: true, inclusion: { in: Picture::PictureType::ALL }
-  validates :imageable_type, presence: true, inclusion: { in: Picture::ImagableType::ALL }
+  validates :imageable_type, inclusion: { in: Picture::ImagableType::ALL, allow_nil: true }
   validate :imageable_only_user, on: :create, if: -> (record) { record.picture_type.present? }
 
-  # Class methods and Instance methods
+  # Class methods
+
+  # Instance methods
   def owner
     self.imageable_type == ImagableType::USER ? self.imageable : self.imageable.user
   end
