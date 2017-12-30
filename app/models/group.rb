@@ -3,6 +3,7 @@ class Group < ApplicationRecord
   belongs_to :creator, foreign_key: :user_id, class_name: User.name
   has_many :users_groups, dependent: :destroy, inverse_of: :group
   has_many :users, through: :users_groups
+  has_many :posts, inverse_of: :group
 
   # Scopes
   scope :visibility, -> (visibility) { where(visibility: visibility) }

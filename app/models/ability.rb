@@ -32,7 +32,7 @@ class Ability
     end
 
     can [:update, :destroy], Post do |post|
-      user == post.user
+      post.user == user
     end
 
     # Picture
@@ -51,7 +51,7 @@ class Ability
     end
 
     can [:update, :destroy, :add_members, :update_privilege, :remove_members], Group do |group|
-      group.can?(user.id, UsersGroup::Privilege::ADMIN) || group.user_id == user.id || user.is_admin?
+      group.can?(user.id, UsersGroup::Privilege::ADMIN) || user.is_admin?
     end
   end
 end

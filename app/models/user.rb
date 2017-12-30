@@ -63,7 +63,9 @@ class User < ApplicationRecord
     if AppSettings[:authentication][:key_based]
       authentication_token = Rails.cache.read cached_key
       user = User.find_by_authentication_token authentication_token if authentication_token
-      user.generate_api_key if user && renew
+      Rails.cache.write(User.cached_api_key(api_key), user.authentication_token,
+        expires_in: AppSettings[:authentication][:session_expiry]) if user && renew
+      api_key
     elsif api_key
       user = User.find( api_key.split("__").first.delete("^0-9") )
       user = (user.authenticated?(:activation, cached_key) && user.activated_at > Time.now - 24.hours) ? user : nil

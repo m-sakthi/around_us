@@ -8,8 +8,11 @@ en:
     not_found: "Record not found"
     role_already_exist: "Role already exists"
     role_not_exist: "Role does not exists"
+    param_missing: "Missing required parameter."
     required_param_missing: "Required parameter %{name} is/are missing."
     invalid_param_values: "%{param_name} permitted values - (%{valid_values})"
+    cant_be_blank: "can't be blank"
+    is_too_long: "is too long (maximum is #{max_length} characters)"
     invalid_user_ids:
       one: "User ID is invalid"
       other: "User IDs are invalid"
@@ -23,6 +26,8 @@ en:
       cannot_assign_deleted_visibility: "cannot be assigned deleted while creating"
       max_members_limit_reached: "maximum members limit reached"
       cannot_join_unless_public_group: "Cannot join a private/deleted group"
+      cannot_update_self_privilege: "Cannot update privilege for self"
+      not_member: "current user is not part of group with id - %{id}"
   views:
     users:
       email_token_does_not_match: "The email or token does not match."

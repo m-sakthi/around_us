@@ -34,7 +34,6 @@ class Api::V1::PicturesController < ApplicationController
     @picture = Picture.new(picture_params)
     authorize! :create, @picture
     if @picture.valid?
-      authorize! :create, @picture
       @picture.save
       render 'show', status: :created
     else
@@ -74,9 +73,11 @@ class Api::V1::PicturesController < ApplicationController
     end
 
     def validate_params
-      raise App::Exception::InvalidParameter.new(_('errors.pictures.invalid_imageable_type', types: Picture::ImagableType::ALL.join("/") )
-        ) if params[:picture][:imageable_type].blank? || Picture::ImagableType::ALL.exclude?(params[:picture][:imageable_type])
-      raise App::Exception::InvalidParameter.new(_('errors.pictures.invalid_picture_type')
-        ) if params[:picture][:picture_type].present? && Picture::PictureType::ALL.exclude?(params[:picture][:picture_type])
+      if params.present? && params[:picture].present?
+        raise App::Exception::InvalidParameter.new(_('errors.pictures.invalid_imageable_type', types: Picture::ImagableType::ALL.join("/") )
+          ) if params[:picture][:imageable_type].blank? || Picture::ImagableType::ALL.exclude?(params[:picture][:imageable_type])
+        raise App::Exception::InvalidParameter.new(_('errors.pictures.invalid_picture_type')
+          ) if params[:picture][:picture_type].present? && Picture::PictureType::ALL.exclude?(params[:picture][:picture_type])
+      end
     end
 end

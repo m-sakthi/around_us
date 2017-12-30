@@ -13,8 +13,8 @@ class UsersGroup < ApplicationRecord
   module Privilege
     VIEW = "can_view" # Default - Only view posts
     COMMENT = "can_comment" # View and comment posts
-    CREATE = "can_create" # View, comment and create posts
-    ADMIN = "admin" # View, comment, create and delete posts
+    CREATE = "can_create" # View, comment, create and delete created posts
+    ADMIN = "admin" # View, comment, create, delete posts and can add and delete members
     ALL = UsersGroup::Privilege.constants.map{ |privilege| UsersGroup::Privilege.const_get(privilege) }.flatten.uniq
   end
 

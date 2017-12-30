@@ -92,7 +92,7 @@ class Api::V1::GroupsController < ApplicationController
       @group.add_user(current_user.id)
     else
       authorize! :add_members, @group
-      @group.add_multiple_users(sanitized_users_ids.reject{ |i| i == current_user.id }, params[:privilege])
+      @group.add_multiple_users(sanitized_users_ids, params[:privilege])
     end
 
     if @group.errors.present?
@@ -140,7 +140,12 @@ class Api::V1::GroupsController < ApplicationController
   def update_privilege
     raise App::Exception::InvalidParameter.new(_('errors.required_param_missing', name: "user_ids")
       ) if params[:user_id].blank? || params[:id].blank?
-    users_group = @group.users_groups.find_by_user_id!(params[:user_id].to_i)
+
+    user_id = params[:user_id].to_i
+    raise App::Exception::InvalidParameter.new(_('errors.groups.cannot_update_self_privilege')
+      ) if user_id == current_user.id
+
+    users_group = @group.users_groups.find_by_user_id!(user_id)
     users_group.update(privilege: params[:privilege].to_i)
     head :ok
   end
@@ -199,6 +204,6 @@ class Api::V1::GroupsController < ApplicationController
     end
 
     def sanitized_users_ids
-      params[:user_ids].to_s.split(",").map(&:strip).map(&:to_i).reject{ |i| i == 0 }
+      params[:user_ids].to_s.split(",").map(&:strip).map(&:to_i).reject{ |i| i.in?([0, current_user.id]) }
     end
 end
