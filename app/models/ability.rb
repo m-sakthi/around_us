@@ -53,5 +53,15 @@ class Ability
     can [:update, :destroy, :add_members, :update_privilege, :remove_members], Group do |group|
       group.can?(user.id, UsersGroup::Privilege::ADMIN) || user.is_admin?
     end
+
+    # Relationship
+    can [:index, :follow, :unfollow], Relationship do |relationship|
+      user.active?
+    end
+
+    # Request
+    can [:index, :create, :edit, :delete], Request do |relationship|
+      user.active?
+    end
   end
 end

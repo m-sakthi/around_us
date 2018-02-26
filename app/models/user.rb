@@ -13,6 +13,18 @@ class User < ApplicationRecord
   has_many :created_groups, inverse_of: :creator, class_name: Group.name
   has_many :users_groups, inverse_of: :user
   has_many :groups, through: :users_groups
+  has_many :requests, inverse_of: :user
+  has_many :pending_requests, class_name: Request.name, foreign_key: :friend_id
+  has_many :relationships, dependent: :destroy
+
+  has_many :friendships, -> { friend }, class_name: Relationship.name
+  has_many :friends, through: :friendships, source: :follower
+
+  has_many :follower_relationships, -> { follower }, class_name: Relationship.name
+  has_many :followers, through: :follower_relationships, source: :follower
+
+  has_many :following_relationships, -> { follower }, class_name: Relationship.name, foreign_key: "follower_id"
+  has_many :following, through: :following_relationships, source: :user
 
   # Constants
   module Status
@@ -152,6 +164,13 @@ class User < ApplicationRecord
           when 'Post' then 2
         end", :id)
   end
+
+  # def friends
+  #   friend_ids = Relationship.where(user_id: self.id)
+  #     .or(Relationship.where(follower_id: self.id)).friend
+  #     .pluck(:user_id, :follower_id).flatten.uniq
+  #   User.where(id: friend_ids - [self.id]).order(:first_name, :last_name)
+  # end
 
   private
     def ensure_auth_tokens

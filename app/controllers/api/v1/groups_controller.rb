@@ -199,7 +199,8 @@ class Api::V1::GroupsController < ApplicationController
     end
 
     def validate_privilege
-      raise App::Exception::InvalidParameter.new(_('errors.invalid_param_values', param_name: 'privilege', valid_values: UsersGroup.privileges.values.join(", "))
+      raise App::Exception::InvalidParameter.new(_('errors.invalid_param_values',
+        param_name: 'privilege', valid_values: UsersGroup.privileges.values.join(", "))
       ) unless params[:privilege].to_i.in?(UsersGroup.privileges.values)
     end
 

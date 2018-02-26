@@ -82,7 +82,7 @@ class Api::V1::PostsController < ApplicationController
   swagger_api :update do
     summary 'Update a Post'
     param :path, :id, :integer, :required, 'Post ID'
-    param :form, :'post[body]', :string, :required, 'Body of the post'
+    param :form, :'post[body]', :string, :optional, 'Body of the post'
     param :form, :'post[group_id]', :integer, :optional, 'Group ID'
     param_list :form, :'post[privacy]', :integer, :optional,
       'Privacy: followers -> 0, friends -> 1, public -> 2', Post::Privacy::ALL

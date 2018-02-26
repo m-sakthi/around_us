@@ -22,6 +22,20 @@ Rails.application.routes.draw do
 
       resources :pictures
 
+      resources :relationships, only: :index do
+        collection do
+          post :follow
+          put :unfollow
+        end
+      end
+
+      resources :requests, only: [:index, :create] do
+        collection do
+          delete :delete
+          put :edit
+        end
+      end
+
       resources :groups do
         member do
           get :members
