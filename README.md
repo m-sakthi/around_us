@@ -36,12 +36,22 @@ Once you are done with the settings do the following,
 * start the server with `rails s`
 * navigate to `http://localhost:3000` to see the swagger documentation
 
+## Building with docker
+
+* Run the build with `docker-compose build`
+* Run the build and up the container `docker-compose up --build`
+* To create database `docker-compose run web rails db:create`
+* To migrate database `docker-compose run web rails db:migrate`
+* For generating swagger docs `docker-compose run web rails swagger:docs`
+* To access the container
+    - `docker ps` : will list the containers along with their CONTAINER ID.
+    - `docker exec -ti <CONTAINER ID> /bin/bash` : will get you the container's terminal.
+    - run `rails c` in the terminal for rails console.
+
 ## Upcoming
 
 * Unit test cases
-* Dockerization
 * ... more yet to come
 
 ## License
 MIT License (MIT).
-

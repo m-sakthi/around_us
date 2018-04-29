@@ -1,0 +1,7 @@
+.git
+.dockerignore
+.byebug_history
+README.md
+LICENSE
+log/*
+tmp/*
